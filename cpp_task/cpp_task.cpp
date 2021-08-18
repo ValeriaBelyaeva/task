@@ -1,103 +1,69 @@
-﻿#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-#include <assert.h>
-#define NN 1000000
+﻿#include <iostream>
+#include <vector>
+#define sz 1000000
 #define eps 1e-7
+using namespace std;
 
-int n;
-double C;
-double a[NN], p[NN];
-int h[NN];
+vector<double> a(sz), p(sz, 0);
+vector<int> h(sz);
+double e, e1, e2;
 int s, t, i, j;
 double l, r;
+double C;
+int n;
 
-
-
-double
-get_h(void)
-{
-    assert(s < t);
-    return a[h[s]];
-}
-
-int
-pop_h(void)
-{
-    assert(s < t);
-    return h[s++];
-}
-
-void
-push_h(int x)
-{
+void push_h(int x) {
     while (s < t && a[h[t - 1]] < a[x])
         t--;
     h[t++] = x;
 }
 
-int
-main(int argc, char* argv[])
-{
-    double ev, ev1, ev2;
+int main() {
+    ios_base::sync_with_stdio(0);
+    cin.tie(0);
+    cout.tie(0);
+    cout.setf(ios::fixed);
+    cout.precision(10);
     int x;
-    scanf("%d%lf", &n, &C);
-    for (i = 0; i < n - 1; i++)
-        scanf("%lf", &a[i]);
+    cin >> n >> C;
 
-    for (i = 0; i < n; i++)
-        p[i] = 0;
+    for (i = 0; i < n - 1; i++) cin >> a[i];
+    
     s = 0; t = 0;
     i = 0; j = 1;
     l = C; r = 0;
     push_h(0);
-    //   printf('\n');
 
-    while (j < n && i < j && l > a[j - 1] + eps)
-    {
-        ev1 = (l - r) * (j - i) / (j - i + 1);
+    while (j < n && i < j && l > a[j - 1] + eps) {
+        e1 = (l - r) * (j - i) / (j - i + 1);
         if (s < t)
         {
-            ev2 = (l - get_h()) * (j - i);
-            ev = (ev1 < ev2) ? ev1 : ev2;
+            e2 = (l - a[h[s]]) * (j - i);
+            e = (e1 < e2) ? e1 : e2;
         }
-        else
-            ev = ev1;
-        l -= ev / (j - i);
-        r += ev;
-        assert(l + eps > r);
-        if (fabs(l - r) < eps)
-        {
-            push_h(j);
-            j++;
-            r = 0;
+        else e = e1;
+
+        l -= e / (j - i);
+        r += e;
+        if (fabs(l - r) < eps) {
+            push_h(j++); r = 0;
         }
-        if (fabs(l - get_h()) < eps)
-        {
-            x = pop_h();
-            for (; i <= x; i++) {
-                p[i] = l;
-            }
+        if (fabs(l - a[h[s]]) < eps) {
+            x = h[s++];
+            for (i; i <= x; i++)
+                p[i] = l; 
             i = x + 1;
         }
-        if ((i == j) || (l < a[j - 1] + eps))
-        {
-            for (; i < j; i++) {
+        if ((i == j) || (l < a[j - 1] + eps)) {
+            for (; i < j; i++)
                 p[i] = l;
-            }
-            l = r;
-            r = 0;
+            l = r; r = 0;
             i = j;
-            push_h(j);
-            j++;
+            push_h(j++);
         }
     }
-    for (; i < j; i++) {
-        p[i] = l;
-    }
-
-    for (i = 0; i < n; i++)
-        printf("%0.20lf\n", p[i]);
+    for (i; i < j; i++) p[i] = l;
+    for (i = 0; i < n; i++) cout << p[i] << "\n";
 
     return 0;
 }
