@@ -1,5 +1,5 @@
 from math import fabs as abs
-
+def func():
 N, eps = 1000000, 1e-7
 h = [0 for _ in range(N)]
 a = [0 for _ in range(N)]
@@ -17,6 +17,9 @@ C = float(C)
 
 for i in range(n - 1):
     a[i] = int(input())
+
+
+a = tuple(a)
 p = [0 for i in range(n)]
 
 s = 0; t = 0
